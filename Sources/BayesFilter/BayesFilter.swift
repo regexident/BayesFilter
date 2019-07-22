@@ -1,22 +1,21 @@
 public protocol BayesFilter {
     associatedtype Observation
     associatedtype Control
-    associatedtype Prediction
     associatedtype Estimate
 
     func predict(
         control: Control
-    ) -> Prediction
+    ) -> Estimate
 
-    func update(
-        prediction: Prediction,
+    mutating func update(
+        prediction: Estimate,
         observation: Observation,
         control: Control
     ) -> Estimate
 }
 
 extension BayesFilter {
-    public func filter(
+    public mutating func filter(
         observation: Observation,
         control: Control
     ) -> Estimate {
