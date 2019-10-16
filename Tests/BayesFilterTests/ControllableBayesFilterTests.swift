@@ -2,9 +2,10 @@ import XCTest
 
 @testable import BayesFilter
 
-final class BayesFilterTests: XCTestCase {
-    struct DummyFilter: BayesFilter {
+final class ControllableBayesFilterTests: XCTestCase {
+    struct DummyFilter: ControllableBayesFilter {
         typealias Observation = Int
+        typealias Control = Int
         typealias Estimate = Int
         
         var estimate: Estimate
@@ -13,13 +14,16 @@ final class BayesFilterTests: XCTestCase {
             self.estimate = estimate
         }
         
-        func predict() -> Estimate {
-            return self.estimate + 2
+        func predict(
+            control: Control
+        ) -> Estimate {
+            return self.estimate + control
         }
         
         mutating func update(
             prediction: Estimate,
-            observation: Observation
+            observation: Observation,
+            control: Control
         ) -> Estimate {
             self.estimate = (prediction + observation) / 2
             return self.estimate
@@ -27,41 +31,47 @@ final class BayesFilterTests: XCTestCase {
     }
     
     func testPredict() {
-        let filter = DummyFilter(initial: 40)
+        let filter = DummyFilter(initial: 42)
         
-        XCTAssertEqual(filter.predict(), 42)
+        XCTAssertEqual(filter.predict(control: 1), 43)
+        XCTAssertEqual(filter.predict(control: 0), 42)
+        XCTAssertEqual(filter.predict(control: -1), 41)
     }
     
     func testUpdate() {
-        let initial = 32
+        let initial = 42
         
+        let control = 4
         let observation = 50
         
         var filter = DummyFilter(initial: initial)
         
-        let prediction = filter.predict() // 42
+        let prediction = filter.predict(control: control) // 46
         let estimate = filter.update(
             prediction: prediction,
-            observation: observation
+            observation: observation,
+            control: control
         )
         
         // Expect average of prediction and observation:
-        XCTAssertEqual(estimate, 42)
+        XCTAssertEqual(estimate, 48)
     }
     
     func testFilter() {
-        let initial = 32
+        let initial = 42
         
+        let control = 4
         let observation = 50
         
         var filter = DummyFilter(initial: initial)
         
         let estimate = filter.filter(
-            observation: observation
+            observation: observation,
+            control: control
         )
         
         // Expect average of prediction and observation:
-        XCTAssertEqual(estimate, 42)
+        XCTAssertEqual(estimate, 48)
     }
 
     static var allTests = [
