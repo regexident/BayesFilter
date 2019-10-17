@@ -22,8 +22,7 @@ final class ControllableBayesFilterTests: XCTestCase {
         
         mutating func update(
             prediction: Estimate,
-            observation: Observation,
-            control: Control
+            observation: Observation
         ) -> Estimate {
             self.estimate = (prediction + observation) / 2
             return self.estimate
@@ -49,8 +48,7 @@ final class ControllableBayesFilterTests: XCTestCase {
         let prediction = filter.predict(control: control) // 46
         let estimate = filter.update(
             prediction: prediction,
-            observation: observation,
-            control: control
+            observation: observation
         )
         
         // Expect average of prediction and observation:

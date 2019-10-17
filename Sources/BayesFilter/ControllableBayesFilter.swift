@@ -9,8 +9,7 @@ public protocol ControllableBayesFilter {
 
     mutating func update(
         prediction: Estimate,
-        observation: Observation,
-        control: Control
+        observation: Observation
     ) -> Estimate
 }
 
@@ -22,9 +21,7 @@ extension ControllableBayesFilter {
         let prediction = self.predict(control: control)
         return self.update(
             prediction: prediction,
-            observation: observation,
-            control: control
+            observation: observation
         )
     }
 }
-
