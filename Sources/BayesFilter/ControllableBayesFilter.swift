@@ -1,15 +1,7 @@
-public protocol ControllableBayesFilter {
-    associatedtype Observation
-    associatedtype Control
-    associatedtype Estimate
-
-    func predict(
+public protocol ControllableBayesFilter: ControllableBayesPredictor, BayesUpdater {
+    mutating func filter(
+        observation: Observation,
         control: Control
-    ) -> Estimate
-
-    mutating func update(
-        prediction: Estimate,
-        observation: Observation
     ) -> Estimate
 }
 

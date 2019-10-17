@@ -1,13 +1,5 @@
-public protocol BayesFilter {
-    associatedtype Observation
-    associatedtype Estimate
-
-    func predict() -> Estimate
-
-    mutating func update(
-        prediction: Estimate,
-        observation: Observation
-    ) -> Estimate
+public protocol BayesFilter: BayesPredictor, BayesUpdater {
+    mutating func filter(observation: Observation) -> Estimate
 }
 
 extension BayesFilter {
