@@ -1,12 +1,9 @@
-public protocol BayesPredictor {
-    associatedtype Estimate
+import StateSpace
 
+public protocol BayesPredictor: Estimatable {
     func predict() -> Estimate
 }
 
-public protocol ControllableBayesPredictor {
-    associatedtype Estimate
-    associatedtype Control
-
+public protocol ControllableBayesPredictor: Estimatable, Controllable {
     func predict(control: Control) -> Estimate
 }
