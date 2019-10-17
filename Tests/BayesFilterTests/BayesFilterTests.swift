@@ -3,7 +3,7 @@ import XCTest
 @testable import BayesFilter
 
 final class BayesFilterTests: XCTestCase {
-    struct DummyFilter: BayesFilter {
+    struct DummyFilter: BayesFilter, EstimateReadWritable {
         typealias Observation = Int
         typealias Estimate = Int
         
@@ -13,8 +13,8 @@ final class BayesFilterTests: XCTestCase {
             self.estimate = estimate
         }
         
-        func predict() -> Estimate {
-            return self.estimate + 2
+        func predict(estimate: Estimate) -> Estimate {
+            return estimate + 2
         }
         
         mutating func update(

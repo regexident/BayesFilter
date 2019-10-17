@@ -3,7 +3,7 @@ import XCTest
 @testable import BayesFilter
 
 final class ControllableBayesFilterTests: XCTestCase {
-    struct DummyFilter: ControllableBayesFilter {
+    struct DummyFilter: ControllableBayesFilter, EstimateReadWritable {
         typealias Observation = Int
         typealias Control = Int
         typealias Estimate = Int
@@ -15,9 +15,10 @@ final class ControllableBayesFilterTests: XCTestCase {
         }
         
         func predict(
+            estimate: Int,
             control: Control
         ) -> Estimate {
-            return self.estimate + control
+            return estimate + control
         }
         
         mutating func update(
