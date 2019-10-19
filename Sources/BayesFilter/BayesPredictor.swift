@@ -1,31 +1,31 @@
 import StateSpace
 
 public protocol BayesPredictor: Estimatable {
-    func predict(estimate: Estimate) -> Estimate
+    func predicted(estimate: Estimate) -> Estimate
 }
 
 extension BayesPredictor
-    where Self: EstimateReadable
+    where Self: EstimateReadWritable
 {
-    func predict() -> Estimate {
-        return self.predict(
+    public mutating func predict() {
+        self.estimate = self.predicted(
             estimate: self.estimate
         )
     }
 }
 
 public protocol ControllableBayesPredictor: Estimatable, Controllable {
-    func predict(
+    func predicted(
         estimate: Estimate,
         control: Control
     ) -> Estimate
 }
 
 extension ControllableBayesPredictor
-    where Self: EstimateReadable
+    where Self: EstimateReadWritable
 {
-    func predict(control: Control) -> Estimate {
-        return self.predict(
+    public mutating func predict(control: Control) {
+        self.estimate = self.predicted(
             estimate: self.estimate,
             control: control
         )

@@ -1,19 +1,23 @@
-public protocol BayesFilter: BayesPredictor, BayesUpdater {
-    mutating func filter(
+import StateSpace
+
+public protocol BayesFilter: Estimatable, Observable {
+    func filtered(
         estimate: Estimate,
         observation: Observation
     ) -> Estimate
 }
 
-extension BayesFilter {
-    public mutating func filter(
+extension BayesFilter
+    where Self: BayesPredictor & BayesUpdater
+{
+    public func filtered(
         estimate: Estimate,
         observation: Observation
     ) -> Estimate {
-        let prediction = self.predict(
+        let prediction = self.predicted(
             estimate: estimate
         )
-        return self.update(
+        return self.updated(
             prediction: prediction,
             observation: observation
         )
@@ -23,33 +27,35 @@ extension BayesFilter {
 extension BayesFilter
     where Self: EstimateReadWritable
 {
-    mutating func filter(observation: Observation) -> Estimate {
-        return self.filter(
+    public mutating func filter(observation: Observation) {
+        self.estimate = self.filtered(
             estimate: self.estimate,
             observation: observation
         )
     }
 }
 
-public protocol ControllableBayesFilter: ControllableBayesPredictor, BayesUpdater {
-    mutating func filter(
+public protocol ControllableBayesFilter: Estimatable, Controllable, Observable {
+    func filtered(
         estimate: Estimate,
-        observation: Observation,
-        control: Control
+        control: Control,
+        observation: Observation
     ) -> Estimate
 }
 
-extension ControllableBayesFilter {
-    public mutating func filter(
+extension ControllableBayesFilter
+    where Self: ControllableBayesPredictor & BayesUpdater
+{
+    public func filtered(
         estimate: Estimate,
-        observation: Observation,
-        control: Control
+        control: Control,
+        observation: Observation
     ) -> Estimate {
-        let prediction = self.predict(
+        let prediction = self.predicted(
             estimate: estimate,
             control: control
         )
-        return self.update(
+        return self.updated(
             prediction: prediction,
             observation: observation
         )
@@ -59,14 +65,14 @@ extension ControllableBayesFilter {
 extension ControllableBayesFilter
     where Self: EstimateReadWritable
 {
-    mutating func filter(
-        observation: Observation,
-        control: Control
-    ) -> Estimate {
-        return self.filter(
+    public mutating func filter(
+        control: Control,
+        observation: Observation
+    ) {
+        self.estimate = self.filtered(
             estimate: self.estimate,
-            observation: observation,
-            control: control
+            control: control,
+            observation: observation
         )
     }
 }
