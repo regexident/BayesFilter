@@ -23,6 +23,16 @@ public class MultiModalBayesUpdater<Model, Updater>
     }
 }
 
+extension MultiModalBayesUpdater: DimensionsValidatable {
+    public func validate(for dimensions: DimensionsProtocol) throws {
+        for updater in self.updaters.values {
+            if let updater = updater as? DimensionsValidatable {
+                try updater.validate(for: dimensions)
+            }
+        }
+    }
+}
+
 extension MultiModalBayesUpdater: Statable
     where Updater: Statable
 {

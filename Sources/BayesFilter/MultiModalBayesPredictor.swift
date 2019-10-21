@@ -23,6 +23,16 @@ public class MultiModalBayesPredictor<Model, Predictor>
     }
 }
 
+extension MultiModalBayesPredictor: DimensionsValidatable {
+    public func validate(for dimensions: DimensionsProtocol) throws {
+        for predictor in self.predictors.values {
+            if let predictor = predictor as? DimensionsValidatable {
+                try predictor.validate(for: dimensions)
+            }
+        }
+    }
+}
+
 extension MultiModalBayesPredictor: Statable
     where Predictor: Statable
 {
