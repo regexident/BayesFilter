@@ -1,14 +1,14 @@
 import StateSpace
 
-public protocol BayesFilter: Estimatable, Observable {
+public protocol BayesFilterProtocol: Estimatable, Observable {
     func filtered(
         estimate: Estimate,
         observation: Observation
     ) -> Estimate
 }
 
-extension BayesFilter
-    where Self: BayesPredictor & BayesUpdater
+extension BayesFilterProtocol
+    where Self: BayesPredictorProtocol & BayesUpdaterProtocol
 {
     public func filtered(
         estimate: Estimate,
@@ -24,7 +24,7 @@ extension BayesFilter
     }
 }
 
-extension BayesFilter
+extension BayesFilterProtocol
     where Self: EstimateReadWritable
 {
     public mutating func filter(observation: Observation) {
@@ -35,7 +35,7 @@ extension BayesFilter
     }
 }
 
-public protocol ControllableBayesFilter: Estimatable, Controllable, Observable {
+public protocol ControllableBayesFilterProtocol: Estimatable, Controllable, Observable {
     func filtered(
         estimate: Estimate,
         control: Control,
@@ -43,8 +43,8 @@ public protocol ControllableBayesFilter: Estimatable, Controllable, Observable {
     ) -> Estimate
 }
 
-extension ControllableBayesFilter
-    where Self: ControllableBayesPredictor & BayesUpdater
+extension ControllableBayesFilterProtocol
+    where Self: ControllableBayesPredictorProtocol & BayesUpdaterProtocol
 {
     public func filtered(
         estimate: Estimate,
@@ -62,7 +62,7 @@ extension ControllableBayesFilter
     }
 }
 
-extension ControllableBayesFilter
+extension ControllableBayesFilterProtocol
     where Self: EstimateReadWritable
 {
     public mutating func filter(

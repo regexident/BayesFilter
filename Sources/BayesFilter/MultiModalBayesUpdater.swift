@@ -41,8 +41,8 @@ extension MultiModalBayesUpdater: Estimatable
     public typealias Estimate = Updater.Estimate
 }
 
-extension MultiModalBayesUpdater: BayesUpdater
-    where Updater: BayesUpdater
+extension MultiModalBayesUpdater: BayesUpdaterProtocol
+    where Updater: BayesUpdaterProtocol
 {
     public func updated(
         prediction: Estimate,

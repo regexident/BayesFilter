@@ -1,10 +1,10 @@
 import StateSpace
 
-public protocol BayesPredictor: Estimatable {
+public protocol BayesPredictorProtocol: Estimatable {
     func predicted(estimate: Estimate) -> Estimate
 }
 
-extension BayesPredictor
+extension BayesPredictorProtocol
     where Self: EstimateReadWritable
 {
     public mutating func predict() {
@@ -14,14 +14,14 @@ extension BayesPredictor
     }
 }
 
-public protocol ControllableBayesPredictor: Estimatable, Controllable {
+public protocol ControllableBayesPredictorProtocol: Estimatable, Controllable {
     func predicted(
         estimate: Estimate,
         control: Control
     ) -> Estimate
 }
 
-extension ControllableBayesPredictor
+extension ControllableBayesPredictorProtocol
     where Self: EstimateReadWritable
 {
     public mutating func predict(control: Control) {

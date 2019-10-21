@@ -1,13 +1,13 @@
 import StateSpace
 
-public protocol BayesUpdater: Estimatable, Observable {
+public protocol BayesUpdaterProtocol: Estimatable, Observable {
     func updated(
         prediction: Estimate,
         observation: Observation
     ) -> Estimate
 }
 
-extension BayesUpdater
+extension BayesUpdaterProtocol
     where Self: EstimateReadWritable
 {
     public mutating func update(observation: Observation) {

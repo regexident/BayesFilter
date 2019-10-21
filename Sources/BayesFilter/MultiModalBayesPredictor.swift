@@ -41,8 +41,8 @@ extension MultiModalBayesPredictor: Estimatable
     public typealias Estimate = Predictor.Estimate
 }
 
-extension MultiModalBayesPredictor: ControllableBayesPredictor
-    where Predictor: ControllableBayesPredictor
+extension MultiModalBayesPredictor: ControllableBayesPredictorProtocol
+    where Predictor: ControllableBayesPredictorProtocol
 {
     public func predicted(estimate: Estimate, control: Control) -> Estimate {
         return self.withPredictor(for: control.model) { predictor in
