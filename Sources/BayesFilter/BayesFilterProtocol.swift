@@ -5,6 +5,11 @@ public protocol BayesFilterProtocol: Estimatable, Observable {
         estimate: Estimate,
         observation: Observation
     ) -> Estimate
+
+    func batchFiltered<S>(
+        estimate: Estimate,
+        observations: S
+    ) -> Estimate where S: Sequence, S.Element == Observation
 }
 
 extension BayesFilterProtocol
@@ -21,6 +26,23 @@ extension BayesFilterProtocol
             prediction: prediction,
             observation: observation
         )
+    }
+
+    public func batchFiltered<S>(
+        estimate: Estimate,
+        observations: S
+    ) -> Estimate
+        where S: Sequence, S.Element == Observation
+    {
+        return observations.reduce(estimate) { estimate, observation in
+            let prediction = self.predicted(
+                estimate: estimate
+            )
+            return self.updated(
+                prediction: prediction,
+                observation: observation
+            )
+        }
     }
 }
 
@@ -41,6 +63,12 @@ public protocol ControllableBayesFilterProtocol: Estimatable, Controllable, Obse
         control: Control,
         observation: Observation
     ) -> Estimate
+
+    func batchFiltered<C, O>(
+        estimate: Estimate,
+        controls: C,
+        observations: O
+    ) -> Estimate where C: Sequence, O: Sequence, C.Element == Control, O.Element == Observation
 }
 
 extension ControllableBayesFilterProtocol
@@ -59,6 +87,27 @@ extension ControllableBayesFilterProtocol
             prediction: prediction,
             observation: observation
         )
+    }
+
+    public func batchFiltered<C, O>(
+        estimate: Estimate,
+        controls: C,
+        observations: O
+    ) -> Estimate
+        where C: Sequence, O: Sequence, C.Element == Control, O.Element == Observation
+    {
+        let inputs = zip(controls, observations)
+        return inputs.reduce(estimate) { estimate, input in
+            let (control, observation) = input
+            let prediction = self.predicted(
+                estimate: estimate,
+                control: control
+            )
+            return self.updated(
+                prediction: prediction,
+                observation: observation
+            )
+        }
     }
 }
 
