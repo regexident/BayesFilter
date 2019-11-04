@@ -122,24 +122,6 @@ extension Estimateful: ControllableBayesFilterProtocol
 where
     Wrapped: ControllableBayesFilterProtocol
 {
-    public func batchFiltered<C, O>(
-        estimate: Wrapped.Estimate,
-        controls: C,
-        observations: O
-    ) -> Wrapped.Estimate
-    where
-        C: Sequence,
-        O: Sequence,
-        Control == C.Element,
-        Observation == O.Element
-    {
-        return self.wrapped.batchFiltered(
-            estimate: estimate,
-            controls: controls,
-            observations: observations
-        )
-    }
-
     public func filtered(
         estimate: Estimate,
         control: Control,
@@ -149,6 +131,32 @@ where
             estimate: estimate,
             control: control,
             observation: observation
+        )
+    }
+
+    public func batchFiltered<S>(
+        estimate: Estimate,
+        controlsAndObservations: S
+    ) -> Estimate
+        where S: Sequence, S.Element == (Control, Observation)
+    {
+        return self.wrapped.batchFiltered(
+            estimate: estimate,
+            controlsAndObservations: controlsAndObservations
+        )
+    }
+
+    public func batchFiltered<S>(
+        estimate: Estimate,
+        control: Control,
+        observations: S
+    ) -> Estimate
+        where S: Sequence, S.Element == Observation
+    {
+        return self.wrapped.batchFiltered(
+            estimate: estimate,
+            control: control,
+            observations: observations
         )
     }
 }

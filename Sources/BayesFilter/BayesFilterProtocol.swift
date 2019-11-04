@@ -9,11 +9,15 @@ public protocol BayesFilterProtocol: Estimatable, Observable {
     func batchFiltered<S>(
         estimate: Estimate,
         observations: S
-    ) -> Estimate where S: Sequence, S.Element == Observation
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == Observation
 }
 
 extension BayesFilterProtocol
-    where Self: BayesPredictorProtocol & BayesUpdaterProtocol
+where
+    Self: BayesPredictorProtocol & BayesUpdaterProtocol
 {
     public func filtered(
         estimate: Estimate,
@@ -32,7 +36,9 @@ extension BayesFilterProtocol
         estimate: Estimate,
         observations: S
     ) -> Estimate
-        where S: Sequence, S.Element == Observation
+    where
+        S: Sequence,
+        S.Element == Observation
     {
         return observations.reduce(estimate) { estimate, observation in
             let prediction = self.predicted(
@@ -47,12 +53,26 @@ extension BayesFilterProtocol
 }
 
 extension BayesFilterProtocol
-    where Self: EstimateReadWritable
+where
+    Self: EstimateReadWritable
 {
     public mutating func filter(observation: Observation) {
         self.estimate = self.filtered(
             estimate: self.estimate,
             observation: observation
+        )
+    }
+
+    public mutating func batchFilter<S>(
+        observations: S
+    )
+    where
+        S: Sequence,
+        S.Element == Observation
+    {
+        self.estimate = self.batchFiltered(
+            estimate: self.estimate,
+            observations: observations
         )
     }
 }
@@ -64,15 +84,27 @@ public protocol ControllableBayesFilterProtocol: Estimatable, Controllable, Obse
         observation: Observation
     ) -> Estimate
 
-    func batchFiltered<C, O>(
+    func batchFiltered<S>(
         estimate: Estimate,
-        controls: C,
-        observations: O
-    ) -> Estimate where C: Sequence, O: Sequence, C.Element == Control, O.Element == Observation
+        control: Control,
+        observations: S
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == Observation
+
+    func batchFiltered<S>(
+        estimate: Estimate,
+        controlsAndObservations: S
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == (Control, Observation)
 }
 
 extension ControllableBayesFilterProtocol
-    where Self: ControllableBayesPredictorProtocol & BayesUpdaterProtocol
+where
+    Self: ControllableBayesPredictorProtocol & BayesUpdaterProtocol
 {
     public func filtered(
         estimate: Estimate,
@@ -89,22 +121,38 @@ extension ControllableBayesFilterProtocol
         )
     }
 
-    public func batchFiltered<C, O>(
+    public func batchFiltered<S>(
         estimate: Estimate,
-        controls: C,
-        observations: O
+        control: Control,
+        observations: S
     ) -> Estimate
-        where C: Sequence, O: Sequence, C.Element == Control, O.Element == Observation
+    where
+        S: Sequence,
+        S.Element == Observation
     {
-        let inputs = zip(controls, observations)
-        return inputs.reduce(estimate) { estimate, input in
-            let (control, observation) = input
-            let prediction = self.predicted(
+        let prediction = self.predicted(
+            estimate: estimate,
+            control: control
+        )
+        return self.batchUpdated(
+            prediction: prediction,
+            observations: observations
+        )
+    }
+
+    public func batchFiltered<S>(
+        estimate: Estimate,
+        controlsAndObservations: S
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == (Control, Observation)
+    {
+        return controlsAndObservations.reduce(estimate) { estimate, controlAndObservation in
+            let (control, observation) = controlAndObservation
+            return self.filtered(
                 estimate: estimate,
-                control: control
-            )
-            return self.updated(
-                prediction: prediction,
+                control: control,
                 observation: observation
             )
         }
@@ -112,7 +160,8 @@ extension ControllableBayesFilterProtocol
 }
 
 extension ControllableBayesFilterProtocol
-    where Self: EstimateReadWritable
+where
+    Self: EstimateReadWritable
 {
     public mutating func filter(
         control: Control,
@@ -122,6 +171,34 @@ extension ControllableBayesFilterProtocol
             estimate: self.estimate,
             control: control,
             observation: observation
+        )
+    }
+
+    public mutating func batchFilter<S>(
+        control: Control,
+        observations: S
+    )
+    where
+        S: Sequence,
+        S.Element == Observation
+    {
+        self.estimate = self.batchFiltered(
+            estimate: self.estimate,
+            control: control,
+            observations: observations
+        )
+    }
+
+    public mutating func batchFilter<S>(
+        controlsAndObservations: S
+    )
+    where
+        S: Sequence,
+        S.Element == (Control, Observation)
+    {
+        self.estimate = self.batchFiltered(
+            estimate: self.estimate,
+            controlsAndObservations: controlsAndObservations
         )
     }
 }
