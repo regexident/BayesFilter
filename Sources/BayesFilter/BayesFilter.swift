@@ -25,13 +25,15 @@ extension BayesFilter: DimensionsValidatable {
 }
 
 extension BayesFilter: Controllable
-    where Predictor: Controllable
+where
+    Predictor: Controllable
 {
     public typealias Control = Predictor.Control
 }
 
 extension BayesFilter: Observable
-    where Updater: Observable
+where
+    Updater: Observable
 {
     public typealias Observation = Updater.Observation
 }
@@ -41,10 +43,13 @@ extension BayesFilter: Estimatable {
 }
 
 extension BayesFilter: BayesPredictorProtocol
-    where Predictor: BayesPredictorProtocol,
-          Predictor.Estimate == Estimate
+where
+    Predictor: BayesPredictorProtocol,
+    Predictor.Estimate == Estimate
 {
-    public func predicted(estimate: Estimate) -> Estimate {
+    public func predicted(
+        estimate: Estimate
+    ) -> Estimate {
         return self.predictor.predicted(
             estimate: estimate
         )
@@ -52,8 +57,9 @@ extension BayesFilter: BayesPredictorProtocol
 }
 
 extension BayesFilter: ControllableBayesPredictorProtocol
-    where Predictor: ControllableBayesPredictorProtocol,
-          Predictor.Estimate == Estimate
+where
+    Predictor: ControllableBayesPredictorProtocol,
+    Predictor.Estimate == Estimate
 {
     public func predicted(
         estimate: Estimate,
@@ -67,8 +73,9 @@ extension BayesFilter: ControllableBayesPredictorProtocol
 }
 
 extension BayesFilter: BayesUpdaterProtocol
-    where Updater: BayesUpdaterProtocol,
-          Updater.Estimate == Estimate
+where
+    Updater: BayesUpdaterProtocol,
+    Updater.Estimate == Estimate
 {
     public func updated(
         prediction: Estimate,
@@ -82,10 +89,11 @@ extension BayesFilter: BayesUpdaterProtocol
 }
 
 extension BayesFilter: BayesFilterProtocol
-    where Predictor: BayesPredictorProtocol,
-          Updater: BayesUpdaterProtocol,
-          Predictor.Estimate == Estimate,
-          Updater.Estimate == Estimate
+where
+    Predictor: BayesPredictorProtocol,
+    Updater: BayesUpdaterProtocol,
+    Predictor.Estimate == Estimate,
+    Updater.Estimate == Estimate
 {
     public func filtered(
         estimate: Estimate,
@@ -103,10 +111,11 @@ extension BayesFilter: BayesFilterProtocol
 }
 
 extension BayesFilter: ControllableBayesFilterProtocol
-    where Predictor: ControllableBayesPredictorProtocol,
-          Updater: BayesUpdaterProtocol,
-          Predictor.Estimate == Estimate,
-          Updater.Estimate == Estimate
+where
+    Predictor: ControllableBayesPredictorProtocol,
+    Updater: BayesUpdaterProtocol,
+    Predictor.Estimate == Estimate,
+    Updater.Estimate == Estimate
 {
     public func filtered(
         estimate: Estimate,

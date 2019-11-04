@@ -56,7 +56,9 @@ extension BayesFilterProtocol
 where
     Self: EstimateReadWritable
 {
-    public mutating func filter(observation: Observation) {
+    public mutating func filter(
+        observation: Observation
+    ) {
         self.estimate = self.filtered(
             estimate: self.estimate,
             observation: observation

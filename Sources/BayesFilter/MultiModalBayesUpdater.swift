@@ -1,7 +1,8 @@
 import StateSpace
 
 public class MultiModalBayesUpdater<Model, Updater>
-    where Model: Hashable
+where
+    Model: Hashable
 {
     public var updaters: [Model: Updater] = [:]
     public var closure: (Model) -> Updater
@@ -34,25 +35,29 @@ extension MultiModalBayesUpdater: DimensionsValidatable {
 }
 
 extension MultiModalBayesUpdater: Statable
-    where Updater: Statable
+where
+    Updater: Statable
 {
     public typealias State = Updater.State
 }
 
 extension MultiModalBayesUpdater: Observable
-    where Updater: Observable
+where
+    Updater: Observable
 {
     public typealias Observation = MultiModal<Model, Updater.Observation>
 }
 
 extension MultiModalBayesUpdater: Estimatable
-    where Updater: Estimatable
+where
+    Updater: Estimatable
 {
     public typealias Estimate = Updater.Estimate
 }
 
 extension MultiModalBayesUpdater: BayesUpdaterProtocol
-    where Updater: BayesUpdaterProtocol
+where
+    Updater: BayesUpdaterProtocol
 {
     public func updated(
         prediction: Estimate,

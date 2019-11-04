@@ -1,5 +1,6 @@
 public struct MultiModal<Model, Value>
-    where Model: Hashable
+where
+    Model: Hashable
 {
     public let model: Model
     public let value: Value

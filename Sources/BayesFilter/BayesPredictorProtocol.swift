@@ -23,7 +23,8 @@ extension BayesPredictorProtocol {
 }
 
 extension BayesPredictorProtocol
-    where Self: EstimateReadWritable
+where
+    Self: EstimateReadWritable
 {
     public mutating func predict() {
         self.estimate = self.predicted(
@@ -41,7 +42,10 @@ public protocol ControllableBayesPredictorProtocol: Estimatable, Controllable {
     func batchPredicted<S>(
         estimate: Estimate,
         controls: S
-    ) -> Estimate where S: Sequence, S.Element == Control
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == Control
 }
 
 extension ControllableBayesPredictorProtocol {
@@ -49,7 +53,9 @@ extension ControllableBayesPredictorProtocol {
         estimate: Estimate,
         controls: S
     ) -> Estimate
-        where S: Sequence, S.Element == Control
+    where
+        S: Sequence,
+        S.Element == Control
     {
         return controls.reduce(estimate) { estimate, control in
             return self.predicted(
@@ -61,9 +67,12 @@ extension ControllableBayesPredictorProtocol {
 }
 
 extension ControllableBayesPredictorProtocol
-    where Self: EstimateReadWritable
+where
+    Self: EstimateReadWritable
 {
-    public mutating func predict(control: Control) {
+    public mutating func predict(
+        control: Control
+    ) {
         self.estimate = self.predicted(
             estimate: self.estimate,
             control: control
@@ -73,7 +82,9 @@ extension ControllableBayesPredictorProtocol
     public mutating func batchPredict<S>(
         controls: S
     )
-        where S: Sequence, S.Element == Control
+    where
+        S: Sequence,
+        S.Element == Control
     {
         self.estimate = self.batchPredicted(
             estimate: self.estimate,

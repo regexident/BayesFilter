@@ -9,7 +9,10 @@ public protocol BayesUpdaterProtocol: Estimatable, Observable {
     func batchUpdated<S>(
         prediction: Estimate,
         observations: S
-    ) -> Estimate where S: Sequence, S.Element == Observation
+    ) -> Estimate
+    where
+        S: Sequence,
+        S.Element == Observation
 }
 
 extension BayesUpdaterProtocol {
@@ -17,7 +20,9 @@ extension BayesUpdaterProtocol {
         prediction: Estimate,
         observations: S
     ) -> Estimate
-        where S: Sequence, S.Element == Observation
+    where
+        S: Sequence,
+        S.Element == Observation
     {
         return observations.reduce(prediction) { estimate, observation in
             return self.updated(
@@ -29,9 +34,12 @@ extension BayesUpdaterProtocol {
 }
 
 extension BayesUpdaterProtocol
-    where Self: EstimateReadWritable
+where
+    Self: EstimateReadWritable
 {
-    public mutating func update(observation: Observation) {
+    public mutating func update(
+        observation: Observation
+    ) {
         self.estimate = self.updated(
             prediction: self.estimate,
             observation: observation
@@ -41,7 +49,9 @@ extension BayesUpdaterProtocol
     public mutating func batchUpdate<S>(
         observations: S
     )
-        where S: Sequence, S.Element == Observation
+    where
+        S: Sequence,
+        S.Element == Observation
     {
         self.estimate = self.batchUpdated(
             prediction: self.estimate,

@@ -1,7 +1,8 @@
 import StateSpace
 
 public class MultiModalBayesPredictor<Model, Predictor>
-    where Model: Hashable
+where
+    Model: Hashable
 {
     public var predictors: [Model: Predictor] = [:]
     public var closure: (Model) -> Predictor
@@ -34,27 +35,34 @@ extension MultiModalBayesPredictor: DimensionsValidatable {
 }
 
 extension MultiModalBayesPredictor: Statable
-    where Predictor: Statable
+where
+    Predictor: Statable
 {
     public typealias State = Predictor.State
 }
 
 extension MultiModalBayesPredictor: Controllable
-    where Predictor: Controllable
+where
+    Predictor: Controllable
 {
     public typealias Control = MultiModal<Model, Predictor.Control>
 }
 
 extension MultiModalBayesPredictor: Estimatable
-    where Predictor: Estimatable
+where
+    Predictor: Estimatable
 {
     public typealias Estimate = Predictor.Estimate
 }
 
 extension MultiModalBayesPredictor: ControllableBayesPredictorProtocol
-    where Predictor: ControllableBayesPredictorProtocol
+where
+    Predictor: ControllableBayesPredictorProtocol
 {
-    public func predicted(estimate: Estimate, control: Control) -> Estimate {
+    public func predicted(
+        estimate: Estimate,
+        control: Control
+    ) -> Estimate {
         return self.withPredictor(for: control.model) { predictor in
             return predictor.predicted(estimate: estimate, control: control.value)
         }

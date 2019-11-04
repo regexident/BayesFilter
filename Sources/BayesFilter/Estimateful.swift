@@ -52,7 +52,9 @@ extension Estimateful: BayesPredictorProtocol
 where
     Wrapped: BayesPredictorProtocol
 {
-    public func predicted(estimate: Estimate) -> Estimate {
+    public func predicted(
+        estimate: Estimate
+    ) -> Estimate {
         return self.wrapped.predicted(
             estimate: estimate
         )
@@ -138,7 +140,9 @@ where
         estimate: Estimate,
         controlsAndObservations: S
     ) -> Estimate
-        where S: Sequence, S.Element == (Control, Observation)
+    where
+        S: Sequence,
+        S.Element == (Control, Observation)
     {
         return self.wrapped.batchFiltered(
             estimate: estimate,
@@ -151,7 +155,9 @@ where
         control: Control,
         observations: S
     ) -> Estimate
-        where S: Sequence, S.Element == Observation
+    where
+        S: Sequence,
+        S.Element == Observation
     {
         return self.wrapped.batchFiltered(
             estimate: estimate,
